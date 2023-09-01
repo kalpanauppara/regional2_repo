@@ -14,7 +14,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-   
+      - name: Clear GitHub workspace
+        run: rm -rf ${{ github.workspace }}
 
       - name: Create the content_repo2 directory
         run: mkdir content_repo2
