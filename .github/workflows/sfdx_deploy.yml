@@ -20,7 +20,7 @@ jobs:
 
       - name: Set output for sfdx-sample-code
         id: set-output-sfdx-sample-code
-        run: echo "::set-output name=test::"cd sfdx-sample-code"
+        run: echo "::set-output name=test::sfdx-sample-code"
 
   deploycodeB:
     runs-on: ubuntu-latest
@@ -36,7 +36,7 @@ jobs:
 
       - name: Set output for dream-sfdx-code
         id: set-output-dream-sfdx-code
-        run: echo "::set-output name=test::"cd dream-sfdx-code/"
+        run: echo "::set-output name=test::dream-sfdx-code"
 
   mergeAndDeploy:
     runs-on: ubuntu-latest
@@ -47,11 +47,11 @@ jobs:
       - name: Create the content_deploy directory
         run: mkdir content_deploy
 
-      - name: Copy test.sh from Repo A to content_deploy
-        run: echo "${{ needs.deploycodeA.outputs.test }}" > content_deploy/sfdx-sample-code
+      - name: Copy sfdx-sample-code from Repo A to content_deploy
+        run: cp -r ${{ needs.deploycodeA.outputs.test }} content_deploy/
 
-      - name: Copy test.py from Repo B to content_deploy
-        run: echo "${{ needs.deploycodeB.outputs.test }}" > content_deploy/dream-sfdx-code
+      - name: Copy dream-sfdx-code from Repo B to content_deploy
+        run: cp -r ${{ needs.deploycodeB.outputs.test }} content_deploy/
 
       - name: List contents of content_deploy
         run: ls -lrt content_deploy
