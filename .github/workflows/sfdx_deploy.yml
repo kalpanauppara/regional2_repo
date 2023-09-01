@@ -23,22 +23,18 @@ jobs:
       - name: Clone and copy from Repo A
         run: |
           git clone https://github.com/kalpanauppara/regional2_repo.git
-          cp -R regional2_repo/* content_repo1/
-          ls -R content_repo1/
-        working-directory: ${{ github.workspace }}
-
+          mv regional2_repo content_repo1/
+          
       - name: Clone and copy from Repo B
         run: |
           git clone https://github.com/kalpanauppara/global2_repo.git
-          cp -R global2_repo/* content_repo2/
-          ls -R content_repo2/
-        working-directory: ${{ github.workspace }}
+          mv global2_repo content_repo2/
 
-      - name: List contents of content_repo1
-        run: ls -R content_repo1
+      - name: Move content_repo1 to workspace
+        run: mv content_repo1 ${{ github.workspace }}
 
-      - name: List contents of content_repo2
-        run: ls -R content_repo2
+      - name: Move content_repo2 to workspace
+        run: mv content_repo2 ${{ github.workspace }}
 
       - name: List contents of GitHub workspace
         run: ls -R ${{ github.workspace }}
@@ -54,5 +50,4 @@ jobs:
       - name: Deploy to Salesforce
         run: |
           # Deploy to Salesforce
-          sfdx force:source:deploy -p content_repo1/ -u ${{ secrets.SALESFORCE_DEVHUB_USERNAME }}
-          sfdx force:source:deploy -p content_repo2/ -u ${{ secrets.SALESFORCE_DEVHUB_USERNAME }}
+          sfdx force:source:deploy -p ${{ github.workspace }} -u ${{ secrets.SALESFORCE_DEVHUB_USERNAME }}
