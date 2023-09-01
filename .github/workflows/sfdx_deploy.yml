@@ -14,28 +14,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Create the content_repo1 directory
-        run: mkdir content_repo1
+   
 
       - name: Create the content_repo2 directory
         run: mkdir content_repo2
 
-      - name: Clone and copy from Repo A
-        run: |
-          git clone https://github.com/kalpanauppara/regional2_repo.git
-          mv regional2_repo content_repo1/
-          
+               
       - name: Clone and copy from Repo B
         run: |
           git clone https://github.com/kalpanauppara/global2_repo.git
           mv global2_repo content_repo2/
 
-      - name: Move content_repo1 to workspace
-        run: mv content_repo1 ${{ github.workspace }}
-
-      - name: Move content_repo2 to workspace
-        run: mv content_repo2 ${{ github.workspace }}
-
+      
       - name: List contents of GitHub workspace
         run: ls -R ${{ github.workspace }}
 
