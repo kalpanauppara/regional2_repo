@@ -19,21 +19,12 @@ jobs:
 
       - name: Clone and copy from Repo B
         run: |
-          git clone https://github.com/kalpanauppara/global2_repo.git
+          with:
+          repository: kalpanauppara/global2_repo
+          ref: ${{ github.event.ref }}
           mv global2_repo content_repo2/
       
       - name: List contents of GitHub workspace
         run: ls -R ${{ github.workspace }}
 
-      - name: Install SFDX CLI
-        run: npm install sfdx-cli --global
-
-      - name: Authenticate with Salesforce
-        run: |
-          # Authenticate with Salesforce using the connected app credentials
-          sfdx force:auth:jwt:grant -u ${{ secrets.SALESFORCE_DEVHUB_USERNAME }} -f ${{ secrets.SALESFORCE_JWT_SECRET_KEY }}  -i ${{ secrets.SALESFORCE_JWT_SECRET_KEY }} -s ${{ secrets.SALESFORCE_CONSUMER_KEY }}
-      
-      - name: Deploy to Salesforce
-        run: |
-          # Deploy to Salesforce
-          sfdx force:source:deploy -p ${{ github.workspace }} -u ${{ secrets.SALESFORCE_DEVHUB_USERNAME }}
+     
