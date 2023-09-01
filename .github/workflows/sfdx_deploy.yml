@@ -14,23 +14,29 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Create the content_deploy directory
-        run: mkdir content_deploy
+      - name: Create the content_repo1 directory
+        run: mkdir content_repo1
+
+      - name: Create the content_repo2 directory
+        run: mkdir content_repo2
 
       - name: Clone and copy from Repo A
         run: |
           git clone https://github.com/kalpanauppara/regional2_repo.git
-          cp -R regional2_repo/* content_deploy/
+          cp -R regional2_repo/* content_repo1/
         working-directory: ${{ github.workspace }}
 
       - name: Clone and copy from Repo B
         run: |
           git clone https://github.com/kalpanauppara/global2_repo.git
-          cp -R global2_repo/* content_deploy/
+          cp -R global2_repo/* content_repo2/
         working-directory: ${{ github.workspace }}
 
-      - name: List contents of content_deploy
-        run: ls -R content_deploy
+      - name: List contents of content_repo1
+        run: ls -R content_repo1
+
+      - name: List contents of content_repo2
+        run: ls -R content_repo2
 
       - name: List contents of GitHub workspace
         run: ls -R ${{ github.workspace }}
