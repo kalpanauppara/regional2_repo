@@ -1,4 +1,4 @@
-name: Deploy to Salesforce
+name: Deploy Repos A and B
 
 on:
   push:
@@ -7,24 +7,80 @@ on:
       - 'feature_branch'
 
 jobs:
+  deploycodeA:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code from Repo A
+        uses: actions/checkout@v2
+        with:
+          repository: kalpanauppara/regional2_repo
+          ref: ${{ github.event.ref }}
+      
+      # ... other steps to prepare Repo A code ...
+
+      - name: Set output for sfdx-sample-code
+        id: set-output-sfdx-sample-code
+        run: echo "::set-output name=test::"cd sfdx-sample-code"
+
+  deploycodeB:
+    runs-on: ubuntu-latest
+    needs: deploycodeA
+    steps:
+      - name: Checkout code from Repo B
+        uses: actions/checkout@v2
+        with:
+          repository: kalpanauppara/global2_repo
+          ref: feature_branch
+
+      # ... other steps to prepare Repo B code ...
+
+      - name: Set output for dream-sfdx-code
+        id: set-output-dream-sfdx-code
+        run: echo "::set-output name=test::"cd dream-sfdx-code/"
+
+  mergeAndDeploy:
+    runs-on: ubuntu-latest
+    needs:
+      - deploycodeA
+      - deploycodeB
+    steps:
+      - name: Create the content_deploy directory
+        run: mkdir content_deploy
+
+      - name: Copy test.sh from Repo A to content_deploy
+        run: echo "${{ needs.deploycodeA.outputs.test }}" > content_deploy/sfdx-sample-code
+
+      - name: Copy test.py from Repo B to content_deploy
+        run: echo "${{ needs.deploycodeB.outputs.test }}" > content_deploy/dream-sfdx-code
+
+      - name: List contents of content_deploy
+        run: ls -lrt content_deploy
+
   deploy-to-salesforce:
     runs-on: ubuntu-latest
-
+    needs:
+      - mergeAndDeploy
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Create the content_repo2 directory
-        run: mkdir content_repo2
-
-      - name: Clone and copy from Repo B
-        run: |
-          with:
-          repository: kalpanauppara/global2_repo
-          ref: ${{ github.event.ref }}
-          mv global2_repo content_repo2/
+    - name: Install SFDX CLI
+      run: npm install sfdx-cli --global
       
-      - name: List contents of GitHub workspace
-        run: ls -R ${{ github.workspace }}
+    - name: Install SFDX-Scanner
+      run: sfdx plugins:install @salesforce/sfdx-scanner
 
-     
+    - name: Install SFDX-Git-Delta plugin
+      run: |
+        echo y | sfdx plugin:install sfdx-git-delta
+        sfdx plugins
+
+    - name: Authenticate with Salesforce
+      run: |
+        # Authenticate with Salesforce using the connected app credentials
+        sfdx force:auth:jwt:grant -u ${{ secrets.SALESFORCE_DEVHUB_USERNAME }} -f ${{ secrets.SALESFORCE_JWT_SECRET_KEY }}  -i ${{ secrets.SALESFORCE_JWT_SECRET_KEY }} -s ${{ secrets.SALESFORCE_CONSUMER_KEY }}
+
+    - name: Deploy to Salesforce
+      run: |
+        # Deploy to Salesforce
+        sfdx force:source:deploy -p content_deploy/ -u ${{ secrets.SALESFORCE_DEVHUB_USERNAME }}
