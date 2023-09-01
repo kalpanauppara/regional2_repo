@@ -28,3 +28,9 @@ jobs:
           git clone https://github.com/kalpanauppara/global2_repo.git
           cp -R global2_repo/* content_deploy/
         working-directory: ${{ github.workspace }}
+
+      - name: List contents of content_deploy
+        run: ls -R content_deploy
+
+      - name: List contents of GitHub workspace
+        run: ls -R ${{ github.workspace }}
