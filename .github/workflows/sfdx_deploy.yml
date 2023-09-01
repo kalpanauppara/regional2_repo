@@ -7,7 +7,7 @@ on:
       - 'feature_branch'
 
 jobs:
-  deploycodeA:
+  deploy-repos:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code from Repo A
@@ -15,72 +15,48 @@ jobs:
         with:
           repository: kalpanauppara/regional2_repo
           ref: ${{ github.event.ref }}
-      
-      # ... other steps to prepare Repo A code ...
+        # This step will check out the specified branch or commit from Repo A
 
-      - name: Set output for sfdx-sample-code
-        id: set-output-sfdx-sample-code
-        run: echo "::set-output name=test::sfdx-sample-code"
+      - name: Clone and copy from Repo A
+        run: |
+          mkdir content_deploy
+          cp -R regional2_repo/sfdx-sample-code content_deploy/
+        working-directory: ${{ github.workspace }}
+        # Replace 'path/to/your/folder1' with the actual path to the folder you want to copy from Repo A
 
-  deploycodeB:
-    runs-on: ubuntu-latest
-    needs: deploycodeA
-    steps:
       - name: Checkout code from Repo B
         uses: actions/checkout@v2
         with:
           repository: kalpanauppara/global2_repo
           ref: feature_branch
+        # This step will check out the specified branch or commit from Repo B
 
-      # ... other steps to prepare Repo B code ...
-
-      - name: Set output for dream-sfdx-code
-        id: set-output-dream-sfdx-code
-        run: echo "::set-output name=test::dream-sfdx-code"
-
-  mergeAndDeploy:
-    runs-on: ubuntu-latest
-    needs:
-      - deploycodeA
-      - deploycodeB
-    steps:
-      - name: Create the content_deploy directory
-        run: mkdir content_deploy
-
-      - name: Copy sfdx-sample-code from Repo A to content_deploy
-        run: cp -r ${{ needs.deploycodeA.outputs.test }} content_deploy/
-
-      - name: Copy dream-sfdx-code from Repo B to content_deploy
-        run: cp -r ${{ needs.deploycodeB.outputs.test }} content_deploy/
+      - name: Clone and copy from Repo B
+        run: |
+          cp -R global2_repo/dream-sfdx-code content_deploy/
+        working-directory: ${{ github.workspace }}
+        # Replace 'path/to/your/folder2' with the actual path to the folder you want to copy from Repo B
 
       - name: List contents of content_deploy
         run: ls -lrt content_deploy
 
-  deploy-to-salesforce:
-    runs-on: ubuntu-latest
-    needs:
-      - mergeAndDeploy
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Install SFDX CLI
-      run: npm install sfdx-cli --global
+      - name: Install SFDX CLI
+        run: npm install sfdx-cli --global
       
-    - name: Install SFDX-Scanner
-      run: sfdx plugins:install @salesforce/sfdx-scanner
+      - name: Install SFDX-Scanner
+        run: sfdx plugins:install @salesforce/sfdx-scanner
 
-    - name: Install SFDX-Git-Delta plugin
-      run: |
-        echo y | sfdx plugin:install sfdx-git-delta
-        sfdx plugins
+      - name: Install SFDX-Git-Delta plugin
+        run: |
+          echo y | sfdx plugin:install sfdx-git-delta
+          sfdx plugins
 
-    - name: Authenticate with Salesforce
-      run: |
-        # Authenticate with Salesforce using the connected app credentials
-        sfdx force:auth:jwt:grant -u ${{ secrets.SALESFORCE_DEVHUB_USERNAME }} -f ${{ secrets.SALESFORCE_JWT_SECRET_KEY }}  -i ${{ secrets.SALESFORCE_JWT_SECRET_KEY }} -s ${{ secrets.SALESFORCE_CONSUMER_KEY }}
+      - name: Authenticate with Salesforce
+        run: |
+          # Authenticate with Salesforce using the connected app credentials
+          sfdx force:auth:jwt:grant -u ${{ secrets.SALESFORCE_DEVHUB_USERNAME }} -f ${{ secrets.SALESFORCE_JWT_SECRET_KEY }}  -i ${{ secrets.SALESFORCE_JWT_SECRET_KEY }} -s ${{ secrets.SALESFORCE_CONSUMER_KEY }}
 
-    - name: Deploy to Salesforce
-      run: |
-        # Deploy to Salesforce
-        sfdx force:source:deploy -p content_deploy/ -u ${{ secrets.SALESFORCE_DEVHUB_USERNAME }}
+      - name: Deploy to Salesforce
+        run: |
+          # Deploy to Salesforce
+          sfdx force:source:deploy -p content_deploy/ -u ${{ secrets.SALESFORCE_DEVHUB_USERNAME }}
