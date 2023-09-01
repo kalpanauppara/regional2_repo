@@ -19,14 +19,14 @@ jobs:
 
       - name: Clone and copy from Repo A
         run: |
-          git clone https://github.com/kalpanauppara/regional_repo.git
-          cp -R regional_repo/mycode/* content_deploy/
+          git clone https://github.com/kalpanauppara/regional2_repo.git
+          cp -R regional2_repo/force-app/* content_deploy/
         working-directory: ${{ github.workspace }}
 
       - name: Clone and copy from Repo B
         run: |
-          git clone https://github.com/kalpanauppara/global_repo.git
-          cp -R global_repo/mysourcecode/* content_deploy/
+          git clone https://github.com/kalpanauppara/global2_repo.git
+          cp -R global2_repo/force-app/* content_deploy/
         working-directory: ${{ github.workspace }}
 
       
