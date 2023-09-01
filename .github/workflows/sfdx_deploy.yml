@@ -19,8 +19,9 @@ jobs:
 
       - name: Clone and copy from Repo A
         run: |
-          mkdir content_deploy
-          cp -R sfdx-sample-code content_deploy/
+          mkdir content_repo1
+          cp -R sfdx-sample-code content_repo1
+          ls -lrt content_repo1
         working-directory: ${{ github.workspace }}
         # Replace 'path/to/your/folder1' with the actual path to the folder you want to copy from Repo A
 
@@ -33,12 +34,13 @@ jobs:
 
       - name: Clone and copy from Repo B
         run: |
-          cp -R dream-sfdx-code content_deploy/
+          mkdir content_repo2
+          cp -R dream-sfdx-code content_repo2
         working-directory: ${{ github.workspace }}
         # Replace 'path/to/your/folder2' with the actual path to the folder you want to copy from Repo B
 
-      - name: List contents of content_deploy
-        run: ls -lrt content_deploy
+      - name: List contents of content_repo2
+        run: ls -lrt content_repo2
 
       - name: Install SFDX CLI
         run: npm install sfdx-cli --global
