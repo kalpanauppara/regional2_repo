@@ -23,7 +23,7 @@ jobs:
           cp -R sfdx-sample-code content_repo1
           ls -lrt content_repo1
           cd sfdx-sample-code 
-          ls-lrt
+          ls -lrt
         working-directory: ${{ github.workspace }}
         # Replace 'path/to/your/folder1' with the actual path to the folder you want to copy from Repo A
 
@@ -45,7 +45,7 @@ jobs:
         run: |
               ls -lrt content_repo2
               cd dream-sfdx-code
-              ls-lrt
+              ls -lrt
         
 
       - name: Install SFDX CLI
