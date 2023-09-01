@@ -52,4 +52,5 @@ jobs:
       - name: Deploy to Salesforce
         run: |
           # Deploy to Salesforce
-          sfdx force:source:deploy -p content_deploy/ -u ${{ secrets.SALESFORCE_DEVHUB_USERNAME }}
+          sfdx force:source:deploy -p content_repo1/ -u ${{ secrets.SALESFORCE_DEVHUB_USERNAME }}
+          sfdx force:source:deploy -p content_repo2/ -u ${{ secrets.SALESFORCE_DEVHUB_USERNAME }}
