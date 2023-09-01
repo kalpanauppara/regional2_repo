@@ -24,12 +24,14 @@ jobs:
         run: |
           git clone https://github.com/kalpanauppara/regional2_repo.git
           cp -R regional2_repo/* content_repo1/
+          ls -R content_repo1/
         working-directory: ${{ github.workspace }}
 
       - name: Clone and copy from Repo B
         run: |
           git clone https://github.com/kalpanauppara/global2_repo.git
           cp -R global2_repo/* content_repo2/
+          ls -R content_repo2/
         working-directory: ${{ github.workspace }}
 
       - name: List contents of content_repo1
