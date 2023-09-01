@@ -29,19 +29,4 @@ jobs:
           cp -R global_repo/mysourcecode/* content_deploy/
         working-directory: ${{ github.workspace }}
 
-      - name: Install Salesforce CLI
-        run: |
-          wget https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz
-          mkdir sfdx-cli
-          tar xJf sfdx-linux-amd64.tar.xz -C sfdx-cli --strip-components 1
-          echo "export PATH=\$PATH:$PWD/sfdx-cli" >> $GITHUB_ENV
-          # Debugging: Check the PATH and Salesforce CLI version
-          echo "Checking PATH environment variable"
-          echo $PATH
-          which sfdx
-          sfdx --version
-
-      - name: Authenticate with Salesforce
-        run: |
-          # Authenticate with Salesforce using the connected app credentials
-          sfdx force:auth:jwt:grant -u ${{ secrets.SALESFORCE_DEVH
+      
