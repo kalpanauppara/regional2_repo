@@ -5,12 +5,11 @@ on:
     branches:
       - '!main'
       - 'feature_branch'
-      
 
 jobs:
   deploy-to-salesforce:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -35,3 +34,16 @@ jobs:
 
       - name: List contents of GitHub workspace
         run: ls -R ${{ github.workspace }}
+
+      - name: Install SFDX CLI
+        run: npm install sfdx-cli --global
+
+      - name: Authenticate with Salesforce
+        run: |
+          # Authenticate with Salesforce using the connected app credentials
+          sfdx force:auth:jwt:grant -u ${{ secrets.SALESFORCE_DEVHUB_USERNAME }} -f ${{ secrets.SALESFORCE_JWT_SECRET_KEY }}  -i ${{ secrets.SALESFORCE_JWT_SECRET_KEY }} -s ${{ secrets.SALESFORCE_CONSUMER_KEY }}
+
+      - name: Deploy to Salesforce
+        run: |
+          # Deploy to Salesforce
+          sfdx force:source:deploy -p content_deploy/ -u ${{ secrets.SALESFORCE_DEVHUB_USERNAME }}
