@@ -62,7 +62,7 @@ jobs:
       - name: Authenticate with Salesforce
         run: |
           # Authenticate with Salesforce using the connected app credentials
-          sfdx force:auth:jwt:grant -u ${{ secrets.SALESFORCE_DEVHUB_USERNAME }} -f 6Cel800D7x000001m62Z8887x0000001wRlOTE7H6zBHoY2lsPSbwAUN0OozM4O948ynw3oromyhSrtoovTzQ6ZjJD6mFSZj6MXVgz7EHym -i ${{ secrets.SALESFORCE_JWT_SECRET_KEY }} -s ${{ secrets.SALESFORCE_CONSUMER_KEY }}
+          sfdx force:auth:jwt:grant -u ${{ secrets.SALESFORCE_DEVHUB_USERNAME }} -i ${{ secrets.SALESFORCE_JWT_SECRET_KEY }} -s ${{ secrets.SALESFORCE_CONSUMER_KEY }}
         working-directory: ${{ github.workspace }}
 
       - name: Deploy to Salesforce
