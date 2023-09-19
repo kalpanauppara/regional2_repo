@@ -5,9 +5,9 @@
         <name>ApexClass</name>
     </types>
     <types>
-        <members>*</members>
-        <name>ApexComponent</name>
-    </types>
+		<members>apexEmailNotifications</members>
+		<name>ApexEmailNotifications</name>
+	</types>
     <types>
         <members>*</members>
         <name>ApexPage</name>
